@@ -25,6 +25,7 @@ class ChessGUI(QMainWindow):
     """
     Classe que representa a interface gráfica do jogo de xadrez.
     """
+
     def __init__(self):
         super(ChessGUI, self).__init__()
 
@@ -59,7 +60,8 @@ class ChessGUI(QMainWindow):
         self.layout.addWidget(self.move_input)
 
         # Inicializa o botão para enviar o movimento
-        self.move_button = QPushButton("Enviar movimento (exemplo: e2e4)", self)
+        self.move_button = QPushButton(
+            "Enviar movimento (exemplo: e2e4)", self)
         self.move_button.clicked.connect(self.make_next_move)
         self.layout.addWidget(self.move_button)
 
@@ -68,6 +70,12 @@ class ChessGUI(QMainWindow):
         self.status_label.setMinimumHeight(20)
         self.status_label.setMaximumHeight(20)
         self.layout.addWidget(self.status_label)
+
+        # Mostra Ultima jodada da IA
+        self.movimento_label = QLabel("Ultimo Movimento IA: n/a", self)
+        self.movimento_label.setMinimumHeight(20)
+        self.movimento_label.setMaximumHeight(20)
+        self.layout.addWidget(self.movimento_label)
 
         # Configurações da janela
         self.setWindowTitle("Chess GUI")
@@ -90,9 +98,10 @@ class ChessGUI(QMainWindow):
         # Verifica se o jogo não acabou e se é a vez do jogador
         if self.current_player is not None and not self.board.is_game_over():
             move_uci = self.move_input.text()
-            
+
             # Verifica se o movimento é válido
             if chess.Move.from_uci(move_uci) in self.board.legal_moves:
+
                 self.board.push_uci(move_uci)
                 self.update_board_display()
 
@@ -101,8 +110,9 @@ class ChessGUI(QMainWindow):
                     self.status_label.setText("Game Over!")
                 else:
                     self.toggle_current_player()
-                    self.status_label.setText(f"Status: esperando o movimento das {'Brancas' if self.current_player == chess.WHITE else 'Pretas'}")
-                    
+                    self.status_label.setText(
+                        f"Status: esperando o movimento das {'Brancas' if self.current_player == chess.WHITE else 'Pretas'}")
+
                     # Se as Pretas começarem, a IA faz o primeiro movimento
                     if self.current_player == chess.BLACK:
                         self.make_ai_move()
@@ -114,13 +124,17 @@ class ChessGUI(QMainWindow):
         Faz o próximo movimento da IA.
         """
         legal_moves = list(self.board.legal_moves)
-        
+
         # Verifica se o jogo não acabou e se é a vez da IA
         if legal_moves:
             move = random.choice(legal_moves)
             self.board.push(move)
             self.update_board_display()
             self.toggle_current_player()
+            
+            # Atualiza A UI do ultimo movimento da IA
+            self.movimento_label.setText(
+                f"Ultimo Movimento IA: {move}")
 
     def toggle_current_player(self):
         """
@@ -133,12 +147,14 @@ class ChessGUI(QMainWindow):
         Inicia o jogo.
         """
         self.current_player = chosen_color
-        self.status_label.setText(f"Status: esperando o movimento das {'Brancas' if self.current_player == chess.WHITE else 'Pretas'}")
+        self.status_label.setText(
+            f"Status: esperando o movimento das {'Brancas' if self.current_player == chess.WHITE else 'Pretas'}")
         self.color_layout.setEnabled(False)
 
         # Se as Pretas começarem, a IA faz o primeiro movimento
         if self.current_player == chess.BLACK:
             self.make_ai_move()
+
 
 if __name__ == "__main__":
     """
@@ -150,4 +166,3 @@ if __name__ == "__main__":
     gui.show()
 
     sys.exit(app.exec_())
-

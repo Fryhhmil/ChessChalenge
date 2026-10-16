@@ -1,0 +1,52 @@
+# Configuração do motor para o III Chess Challenge.
+# Caminhos relativos são resolvidos a partir da pasta deste arquivo.
+# Tempos em segundos.
+
+[engine]
+path = "engines/stockfish-windows-x86-64-universal.exe"
+threads = 12              # a máquina tem 16 núcleos lógicos; sobra folga para GUI/SO
+hash_mb = 1024
+syzygy_path = "assets/syzygy"
+syzygy_probe_limit = 5    # regra da competição: no máximo 5 peças
+
+[book]
+path = "assets/Titans.bin"
+max_plies = 10            # limite RÍGIDO da competição (meios-lances desde o início da partida)
+
+[log]
+dir = "logs"
+
+[ponder]
+enabled = true
+
+[time]
+initial_s = 900           # 15 min
+increment_s = 10
+human_overhead_s = 10     # anunciar + confirmar + mover + apertar relógio + digitar
+reserve_s = 30            # colchão nunca planejado para uso
+min_move_s = 1.0
+max_ratio = 3.0           # máximo = alvo * max_ratio ...
+max_fraction = 0.20       # ... limitado a esta fração do tempo utilizável
+hard_safety_s = 5         # nunca pensar além de (restante - overhead - hard_safety_s)
+emergency_s = 60          # abaixo disso: modo de emergência
+emergency_moves = 15
+absolute_min_s = 0.1
+tablebase_move_s = 0.5
+opening_until_ply = 24    # até aqui (após o book) considera "abertura"
+endgame_material = 24     # material sem peões (soma dos dois lados) <= isto => final
+
+# Lances restantes estimados e peso de cada fase
+opening_moves_to_go = 40
+opening_weight = 0.8
+middlegame_moves_to_go = 32
+middlegame_weight = 1.15
+endgame_moves_to_go = 22
+endgame_weight = 1.0
+
+# Critério de parada dinâmico
+min_depth = 10            # antes disso não confia em estabilidade
+stable_iterations = 5     # iterações com o mesmo melhor lance => para cedo
+stable_factor = 0.45      # fração do alvo usada quando estável
+unstable_factor = 1.6     # melhor lance acabou de mudar => estende
+eval_drop_cp = 25         # queda de avaliação considerada relevante
+eval_drop_max_factor = 2.5
